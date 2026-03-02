@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2>Finanzas</h2>
+
+<!-- Selector de periodo -->
+<form method="get" action="/finanzas">
+    <label>Periodo:</label>
+    <select name="periodo" onchange="this.form.submit()">
+        <option value="diario" {% if periodo=='diario' %}selected{% endif %}>Diario</option>
+        <option value="semanal" {% if periodo=='semanal' %}selected{% endif %}>Semanal</option>
+        <option value="mensual" {% if periodo=='mensual' %}selected{% endif %}>Mensual</option>
+        <option value="anual" {% if periodo=='anual' %}selected{% endif %}>Anual</option>
+    </select>
+</form>
+
+<table>
+    <tr><th>Dinero Invertido</th><td>${{ dinero_invertido }}</td></tr>
+    <tr><th>Ganancias</th><td>${{ ganancias }}</td></tr>
+    <tr><th>Mermas / Pérdidas</th><td>${{ mermas }}</td></tr>
+</table>
+
+{% endblock %}

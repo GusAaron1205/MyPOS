@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2>Historial de Ventas</h2>
+
+<table id="tabla-historial">
+    <thead>
+        <tr>
+            <th>ID Venta</th>
+            <th>Fecha</th>
+            <th>Acciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for venta in ventas %}
+        <tr>
+            <td>{{ venta['id'] }}</td>
+            <td>{{ venta['fecha'] }}</td>
+            <td class="acciones">
+                <button class="btn-ticket" data-id="{{ venta['id'] }}">Ver Ticket</button>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<!-- Modal Ticket -->
+<div id="modal-ticket" class="modal">
+  <div class="modal-content">
+    <h3>Detalle de la Venta</h3>
+    <table id="tabla-ticket">
+      <thead>
+        <tr>
+          <th>Producto</th>
+          <th>Cantidad</th>
+          <th>Precio Unitario</th>
+          <th>Subtotal</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+    <div class="totales">
+      <p>Total: $<span id="total-ticket">0.00</span></p>
+      <p>Recibido: $<span id="recibido-ticket">0.00</span></p>
+      <p>Cambio: $<span id="cambio-ticket">0.00</span></p>
+    </div>
+    <button id="cerrar-ticket">Cerrar</button>
+  </div>
+</div>
+{% endblock %}
+

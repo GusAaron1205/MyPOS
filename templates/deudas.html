@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2>Historial de Ventas</h2>
+
+<table id="tabla-historial">
+    <thead>
+        <tr>
+            <th>ID Venta</th>
+            <th>Fecha y Hora</th>
+            <th>Usuario</th>
+            <th>Acciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for venta in ventas %}
+        <tr>
+            <td>{{ venta['id'] }}</td>
+            <td>{{ venta['fecha'] }}</td>
+            <td>{{ venta['usuario_id'] }}</td>
+            <td>
+                <button class="btn-ticket" data-id="{{ venta['id'] }}">Ver Ticket</button>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<!-- MODAL PARA TICKET -->
+<div id="modal-ticket" class="modal">
+    <div class="modal-content">
+        <h3>Detalle de la Venta</h3>
+        <table id="tabla-ticket">
+            <thead>
+                <tr>
+                    <th>Producto</th>
+                    <th>Cantidad</th>
+                    <th>Precio Unitario</th>
+                    <th>Total</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Aquí se insertarán las filas con JS -->
+            </tbody>
+        </table>
+        <button id="cerrar-ticket">Cerrar</button>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+const modalTicket = document.getElementById('modal-ticket');
+const tablaTicketBody = document.querySelector('#tabla-ticket tbody');
+
+// Botones Ver Ticket
+document.querySelectorAll('.btn-ticket').forEach(btn => {
+    btn.addEventListener('click', () => {
+        const ventaId = btn.dataset.id;
+        fetch(`/ticket/${ventaId}`)
+            .then(resp => resp.json())
+            .then(data => {
+                tablaTicketBody.innerHTML = ''; // Limpiar
+                data.forEach(item => {
+                    const fila = document.createElement('tr');
+                    fila.innerHTML = `
+                        <td>${item.nombre}</td>
+                        <td>${item.cantidad}</td>
+                        <td>${item.precio_venta.toFixed(2)}</td>
+                        <td>${(item.precio_venta * item.cantidad).toFixed(2)}</td>
+                    `;
+                    tablaTicketBody.appendChild(fila);
+                });
+                modalTicket.style.display = 'flex';
+            });
+    });
+});
+
+// Cerrar modal
+document.getElementById('cerrar-ticket').addEventListener('click', () => {
+    modalTicket.style.display = 'none';
+});
+</script>
+{% endblock %}

@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2>Inventario</h2>
+
+<!-- Formulario agregar producto -->
+<form action="/agregar_producto" method="POST">
+    <input type="text" name="nombre" placeholder="Nombre" required>
+    <input type="number" name="stock" placeholder="Stock" required>
+    <input type="number" step="0.01" name="precio_compra" placeholder="Precio Compra" required>
+    <input type="number" step="0.01" name="precio_venta" placeholder="Precio Venta" required>
+    <button type="submit">Agregar</button>
+</form>
+
+<!-- Tabla de productos -->
+<table>
+    <thead>
+        <tr>
+            <th>Nombre</th>
+            <th>Stock</th>
+            <th>Precio Compra</th>
+            <th>Precio Venta</th>
+            <th>Merma del Mes</th>
+            <th>Acciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for p in productos %}
+        <tr>
+            <td>{{ p['nombre'] }}</td>
+            <td>{{ p['stock'] }}</td>
+            <td>{{ p['precio_compra'] }}</td>
+            <td>{{ p['precio_venta'] }}</td>
+            <td>{{ p['merma_mes'] }}</td>
+            <td>
+                <form action="/actualizar_stock/{{p['id']}}" 
+      method="POST" 
+      style="display:inline;"
+      onsubmit="return confirmarAccion(event)">
+    
+    <input type="number" name="cantidad" placeholder="Cantidad" min="1" required style="width:60px;">
+
+    <button type="submit" name="accion" value="merma">-</button>
+    <button type="submit" name="accion" value="sumar">+</button>
+</form>
+
+                <form action="/eliminar_producto/{{p['id']}}" method="POST" style="display:inline;" onsubmit="return confirm('¿Eliminar producto?');">
+                    <button type="submit">Eliminar</button>
+                </form>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+<script>
+function confirmarAccion(event) {
+    const boton = event.submitter; // Detecta qué botón fue presionado
+    const accion = boton.value;
+    const cantidad = event.target.cantidad.value;
+
+    if (accion === "merma") {
+        return confirm(`¿Seguro que quieres restar ${cantidad} unidades?`);
+    }
+
+    if (accion === "sumar") {
+        return confirm(`¿Seguro que quieres agregar ${cantidad} unidades?`);
+    }
+
+    return true;
+}
+</script>
+{% endblock %}
+
